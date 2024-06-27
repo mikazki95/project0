@@ -28,6 +28,23 @@
 #include "inc/hw_memmap.h"
 #include "driverlib/sysctl.h"
 #include "driverlib/gpio.h"
+////bibliotecas adicionales para proyecto
+#include "inc/hw_ints.h"
+#include "driverlib/interrupt.h"
+///////mis bibliotecas
+#include "ucs.h"
+#include "spi.h"
+
+    //
+    // Setup the system clock to run at 50 Mhz from PLL with crystal reference
+    //
+    //SysCtlClockSet(SYSCTL_SYSDIV_4|SYSCTL_USE_PLL|SYSCTL_XTAL_16MHZ|
+                    //SYSCTL_OSC_MAIN);
+
+    //
+    // Enable and wait for the port to be ready for access
+    //
+//
 
 //*****************************************************************************
 //
@@ -62,6 +79,36 @@ __error__(char *pcFilename, uint32_t ui32Line)
 }
 #endif
 
+
+void Device_init(){
+    //WDTCTL = WDTPW | WDTHOLD;   // stop watchdog timer
+
+    // Habilitar interrupciones globales
+    IntMasterEnable();
+    ucsInitial(); //system clock initial
+    timerInitial();
+    spiInitial();
+    //dmaInitial();
+    //*/
+
+    // Set P1.0 and P4.7 for LED blinking
+    //P1DIR |= BIT0;                  // configure P1.0 as output
+    //P4DIR |= BIT7;                  // configure P4.7 as output
+    SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOF);
+
+    while(!SysCtlPeripheralReady(SYSCTL_PERIPH_GPIOF))
+    {
+    }
+
+    //
+    // Configure the GPIO port for the LED operation.
+    //
+    //GPIOPinTypeGPIOOutput(GPIO_PORTF_BASE, RED_LED|BLUE_LED|GREEN_LED);
+    GPIOPinTypeGPIOOutput(GPIO_PORTF_BASE, RED_LED|GREEN_LED);
+
+    //GPIOPinTypeGPIOOutput(GPIO_PORTF_BASE, BLUE_LED);
+
+}
 //*****************************************************************************
 //
 // Main 'C' Language entry point.  Toggle an LED using TivaWare.
@@ -70,25 +117,10 @@ __error__(char *pcFilename, uint32_t ui32Line)
 int
 main(void)
 {
-    //
-    // Setup the system clock to run at 50 Mhz from PLL with crystal reference
-    //
-    SysCtlClockSet(SYSCTL_SYSDIV_4|SYSCTL_USE_PLL|SYSCTL_XTAL_16MHZ|
-                    SYSCTL_OSC_MAIN);
 
-    //
-    // Enable and wait for the port to be ready for access
-    //
-    SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOF);
-    while(!SysCtlPeripheralReady(SYSCTL_PERIPH_GPIOF))
-    {
-    }
+    // Initialize device clock and peripherals
+    Device_init();
     
-    //
-    // Configure the GPIO port for the LED operation.
-    //
-    GPIOPinTypeGPIOOutput(GPIO_PORTF_BASE, RED_LED|BLUE_LED|GREEN_LED);
-
     //
     // Loop Forever
     //
@@ -97,7 +129,8 @@ main(void)
         //
         // Turn on the LED
         //
-        GPIOPinWrite(GPIO_PORTF_BASE, RED_LED|BLUE_LED|GREEN_LED, RED_LED);
+        //GPIOPinWrite(GPIO_PORTF_BASE, RED_LED|BLUE_LED|GREEN_LED, RED_LED);
+        GPIOPinWrite(GPIO_PORTF_BASE, RED_LED|GREEN_LED, RED_LED|GREEN_LED);
 
         //
         // Delay for a bit
@@ -107,13 +140,15 @@ main(void)
         //
         // Turn on the LED
         //
-        GPIOPinWrite(GPIO_PORTF_BASE, RED_LED|BLUE_LED|GREEN_LED, BLUE_LED);
+        //GPIOPinWrite(GPIO_PORTF_BASE, RED_LED|BLUE_LED|GREEN_LED, BLUE_LED);
+        GPIOPinWrite(GPIO_PORTF_BASE, RED_LED|GREEN_LED, RED_LED);
 
         //
         // Delay for a bit
         //
         SysCtlDelay(2000000);
-        GPIOPinWrite(GPIO_PORTF_BASE, RED_LED|BLUE_LED|GREEN_LED, GREEN_LED);
+        //GPIOPinWrite(GPIO_PORTF_BASE, RED_LED|BLUE_LED|GREEN_LED, GREEN_LED);
+        GPIOPinWrite(GPIO_PORTF_BASE, RED_LED|GREEN_LED, GREEN_LED);
 
         //
         // Delay for a bit
@@ -121,4 +156,13 @@ main(void)
         SysCtlDelay(2000000);
 
     }
+}
+
+void Timer0_ISR(void)
+{
+    // Tu código aquí (lo que deseas hacer en cada interrupción)
+    // Por ejemplo, cambiar el estado de un LED o realizar alguna tarea.
+    //vsyncDone = 1;
+    timer_IntClear_user();
+    //TimerIntClear(TIMER0_BASE, TIMER_TIMA_TIMEOUT);
 }

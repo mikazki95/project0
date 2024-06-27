@@ -10,26 +10,38 @@ CMD_SRCS += \
 
 C_SRCS += \
 ../project0.c \
-../startup_ccs.c 
+../spi.c \
+../startup_ccs.c \
+../ucs.c 
 
 C_DEPS += \
 ./project0.d \
-./startup_ccs.d 
+./spi.d \
+./startup_ccs.d \
+./ucs.d 
 
 OBJS += \
 ./project0.obj \
-./startup_ccs.obj 
+./spi.obj \
+./startup_ccs.obj \
+./ucs.obj 
 
 OBJS__QUOTED += \
 "project0.obj" \
-"startup_ccs.obj" 
+"spi.obj" \
+"startup_ccs.obj" \
+"ucs.obj" 
 
 C_DEPS__QUOTED += \
 "project0.d" \
-"startup_ccs.d" 
+"spi.d" \
+"startup_ccs.d" \
+"ucs.d" 
 
 C_SRCS__QUOTED += \
 "../project0.c" \
-"../startup_ccs.c" 
+"../spi.c" \
+"../startup_ccs.c" \
+"../ucs.c" 
 
 

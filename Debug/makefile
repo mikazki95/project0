@@ -4,14 +4,16 @@
 
 SHELL = cmd.exe
 
-CG_TOOL_ROOT := C:/ti/ccs1270/ccs/tools/compiler/ti-cgt-arm_20.2.7.LTS
+CG_TOOL_ROOT := C:/ti/ccs1220/ccs/tools/compiler/ti-cgt-arm_20.2.7.LTS
 
 GEN_OPTS__FLAG := 
 GEN_CMDS__FLAG := 
 
 ORDERED_OBJS += \
 "./project0.obj" \
+"./spi.obj" \
 "./startup_ccs.obj" \
+"./ucs.obj" \
 "../project0_ccs.cmd" \
 $(GEN_CMDS__FLAG) \
 -l"C:/ti/TivaWare_C_Series-2.2.0.295/driverlib/ccs/Debug/driverlib.lib" \
@@ -122,10 +124,10 @@ endif
 
 # Add inputs and outputs from these tool invocations to the build variables 
 EXE_OUTPUTS += \
-project0.out 
+project0.out \
 
 EXE_OUTPUTS__QUOTED += \
-"project0.out" 
+"project0.out" \
 
 
 # All Target
@@ -136,7 +138,7 @@ all: $(OBJS) $(CMD_SRCS) $(GEN_CMDS)
 project0.out: $(OBJS) $(CMD_SRCS) $(GEN_CMDS)
 	@echo 'Building target: "$@"'
 	@echo 'Invoking: ARM Linker'
-	"C:/ti/ccs1270/ccs/tools/compiler/ti-cgt-arm_20.2.7.LTS/bin/armcl" -mv7M4 --code_state=16 --float_support=FPv4SPD16 -me -O2 --define=ccs="ccs" --define=PART_TM4C123GH6PM --define=TARGET_IS_TM4C123_RB1 -g --gcc --diag_warning=225 --diag_wrap=off --display_error_number --gen_func_subsections=on --abi=eabi --ual -z -m"project0_ccs.map" --heap_size=0 --stack_size=256 -i"C:/ti/ccs1270/ccs/tools/compiler/ti-cgt-arm_20.2.7.LTS/lib" -i"C:/ti/ccs1270/ccs/tools/compiler/ti-cgt-arm_20.2.7.LTS/include" --reread_libs --diag_wrap=off --display_error_number --warn_sections --xml_link_info="project0_linkInfo.xml" --rom_model -o "project0.out" $(ORDERED_OBJS)
+	"C:/ti/ccs1220/ccs/tools/compiler/ti-cgt-arm_20.2.7.LTS/bin/armcl" -mv7M4 --code_state=16 --float_support=FPv4SPD16 -me -O2 --define=ccs="ccs" --define=PART_TM4C123GH6PM --define=TARGET_IS_TM4C123_RB1 -g --gcc --diag_warning=225 --diag_wrap=off --display_error_number --gen_func_subsections=on --abi=eabi --ual -z -m"project0_ccs.map" --heap_size=0 --stack_size=256 -i"C:/ti/ccs1220/ccs/tools/compiler/ti-cgt-arm_20.2.7.LTS/lib" -i"C:/ti/ccs1220/ccs/tools/compiler/ti-cgt-arm_20.2.7.LTS/include" --reread_libs --diag_wrap=off --display_error_number --warn_sections --xml_link_info="project0_linkInfo.xml" --rom_model -o "project0.out" $(ORDERED_OBJS)
 	@echo 'Finished building target: "$@"'
 	@echo ' '
 	@$(MAKE) --no-print-directory post-build
@@ -144,13 +146,13 @@ project0.out: $(OBJS) $(CMD_SRCS) $(GEN_CMDS)
 # Other Targets
 clean:
 	-$(RM) $(EXE_OUTPUTS__QUOTED)
-	-$(RM) "project0.obj" "startup_ccs.obj" 
-	-$(RM) "project0.d" "startup_ccs.d" 
+	-$(RM) "project0.obj" "spi.obj" "startup_ccs.obj" "ucs.obj" 
+	-$(RM) "project0.d" "spi.d" "startup_ccs.d" "ucs.d" 
 	-@echo 'Finished clean'
 	-@echo ' '
 
 post-build:
-	-"C:/ti/ccs1270/ccs/utils/tiobj2bin/tiobj2bin" "project0.out" "project0.bin" "C:/ti/ccs1270/ccs/tools/compiler/ti-cgt-arm_20.2.7.LTS/bin/armofd" "C:/ti/ccs1270/ccs/tools/compiler/ti-cgt-arm_20.2.7.LTS/bin/armhex" "C:/ti/ccs1270/ccs/utils/tiobj2bin/mkhex4bin"
+	-"C:/ti/ccs1220/ccs/utils/tiobj2bin/tiobj2bin" "project0.out" "project0.bin" "C:/ti/ccs1220/ccs/tools/compiler/ti-cgt-arm_20.2.7.LTS/bin/armofd" "C:/ti/ccs1220/ccs/tools/compiler/ti-cgt-arm_20.2.7.LTS/bin/armhex" "C:/ti/ccs1220/ccs/utils/tiobj2bin/mkhex4bin"
 	-@echo ' '
 
 .PHONY: all clean dependents
