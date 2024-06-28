@@ -1,6 +1,8 @@
+"./dma.obj"
 "./project0.obj"
 "./spi.obj"
 "./startup_ccs.obj"
+"./system_info.obj"
 "./ucs.obj"
 "../project0_ccs.cmd"
 -l"C:/ti/TivaWare_C_Series-2.2.0.295/driverlib/ccs/Debug/driverlib.lib"

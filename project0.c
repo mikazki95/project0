@@ -87,6 +87,10 @@ void Device_init(){
     IntMasterEnable();
     ucsInitial(); //system clock initial
     timerInitial();
+    SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOA);
+    while(!SysCtlPeripheralReady(SYSCTL_PERIPH_GPIOA))
+    {
+    }
     spiInitial();
     //dmaInitial();
     //*/

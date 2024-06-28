@@ -10,9 +10,11 @@ GEN_OPTS__FLAG :=
 GEN_CMDS__FLAG := 
 
 ORDERED_OBJS += \
+"./dma.obj" \
 "./project0.obj" \
 "./spi.obj" \
 "./startup_ccs.obj" \
+"./system_info.obj" \
 "./ucs.obj" \
 "../project0_ccs.cmd" \
 $(GEN_CMDS__FLAG) \
@@ -146,8 +148,8 @@ project0.out: $(OBJS) $(CMD_SRCS) $(GEN_CMDS)
 # Other Targets
 clean:
 	-$(RM) $(EXE_OUTPUTS__QUOTED)
-	-$(RM) "project0.obj" "spi.obj" "startup_ccs.obj" "ucs.obj" 
-	-$(RM) "project0.d" "spi.d" "startup_ccs.d" "ucs.d" 
+	-$(RM) "dma.obj" "project0.obj" "spi.obj" "startup_ccs.obj" "system_info.obj" "ucs.obj" 
+	-$(RM) "dma.d" "project0.d" "spi.d" "startup_ccs.d" "system_info.d" "ucs.d" 
 	-@echo 'Finished clean'
 	-@echo ' '
 
