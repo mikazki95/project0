@@ -36,6 +36,7 @@ void dmaInitial() //DMA0 -> Tx, DMA1 -> Rx
 
     // Deshabilitar el canal SSI0
     SSIDisable(SSI0_BASE);
+    //SSIEnable(SSI0_BASE);
 
     // Configurar la dirección de origen (ledXmtBuffer)
     //uDMASrcEndAddrSet(DMA_CHANNEL_0, (uint32_t)&ledXmtBuffer[0]);
