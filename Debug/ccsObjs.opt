@@ -1,4 +1,7 @@
+"./CCSI_Socket.obj"
+"./TLC698x_LP589x_APIs.obj"
 "./dma.obj"
+"./frames.obj"
 "./project0.obj"
 "./spi.obj"
 "./startup_ccs.obj"

@@ -20,6 +20,11 @@ project0.obj: C:/ti/TivaWare_C_Series-2.2.0.295/inc/hw_ints.h
 project0.obj: C:/ti/TivaWare_C_Series-2.2.0.295/driverlib/interrupt.h
 project0.obj: ../ucs.h
 project0.obj: ../spi.h
+project0.obj: ../frames.h
+project0.obj: ../led_driver.h
+project0.obj: ../LP5890.h
+project0.obj: ../TLC698x_LP589x_APIs.h
+project0.obj: ../system_info.h
 
 ../project0.c:
 
@@ -60,4 +65,14 @@ C:/ti/TivaWare_C_Series-2.2.0.295/driverlib/interrupt.h:
 ../ucs.h:
 
 ../spi.h:
+
+../frames.h:
+
+../led_driver.h:
+
+../LP5890.h:
+
+../TLC698x_LP589x_APIs.h:
+
+../system_info.h:
 

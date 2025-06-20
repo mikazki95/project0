@@ -25,6 +25,14 @@ uint16_t ledXmtBuffer[CCSI_BUS_NUM][MAX_DATA_LENGTH]; // Stores the data bytes t
 uint16_t ledRcvBuffer[CCSI_BUS_NUM][MAX_DATA_LENGTH]; // Processed received bytes
 uint16_t RxRingBuff[CCSI_BUS_NUM][MAX_DATA_LENGTH]; //Stores the data bytes to be received
 
+// Tabla de control DMA (debe estar alineada a 1024 bytes)
+#if defined(__TI_ARM__)
+#pragma DATA_ALIGN(udmaControlTable, 1024)
+#else
+__attribute__ ((aligned(1024)))
+#endif
+static tDMAControlTable udmaControlTable[64];
+
 unsigned int firstTransfer = TRUE;
 
 
@@ -32,10 +40,10 @@ void dmaInitial() //DMA0 -> Tx, DMA1 -> Rx
 {
 
     // Configuración del canal DMA0 para transmisión SPI
-    uDMAEnable();                                   // Habilitar el módulo DMA
+    //uDMAEnable();                                   // Habilitar el módulo DMA
 
     // Deshabilitar el canal SSI0
-    SSIDisable(SSI0_BASE);
+    //SSIDisable(SSI0_BASE);
     //SSIEnable(SSI0_BASE);
 
     // Configurar la dirección de origen (ledXmtBuffer)
@@ -78,8 +86,75 @@ void dmaInitial() //DMA0 -> Tx, DMA1 -> Rx
 
                                                     // Destination block address
      DMA1CTL |= DMADSTINCR_3 + DMASBDB + DMALEVEL;//;  // increase destination address, source byte to destination byte, level sensitive*/
+    // 1. Habilitar periférico uDMA
+    SysCtlPeripheralEnable(SYSCTL_PERIPH_UDMA);
+    while(!SysCtlPeripheralReady(SYSCTL_PERIPH_UDMA)) {}
+
+    // 2. Habilitar el controlador DMA
+    uDMAEnable();
+
+    // 3. Configurar estructura de control DMA para TX (SPI)
+    uDMAControlBaseSet(udmaControlTable);
+
+    // 4. Configurar canal de transmisión (SPI TX)
+    uDMAChannelAssign(UDMA_CH11_SSI0TX);  // Canal 11 para SSI0 TX
+
+    // 5. Configurar canal de recepción (SPI RX)
+    uDMAChannelAssign(UDMA_CH10_SSI0RX);  // Canal 10 para SSI0 RX
+
+    // 6. Configurar estructuras de transferencia
+    // Configuración para TX (modo básico)
+    uDMAChannelControlSet(UDMA_CH11_SSI0TX | UDMA_PRI_SELECT,
+                            UDMA_SIZE_8 | UDMA_SRC_INC_8 | UDMA_DST_INC_NONE | UDMA_ARB_4);
+    // Configuración para RX (modo básico)
+    uDMAChannelControlSet(UDMA_CH10_SSI0RX | UDMA_PRI_SELECT,
+                            UDMA_SIZE_8 | UDMA_SRC_INC_NONE | UDMA_DST_INC_8 | UDMA_ARB_4);
 }
 
+void dmaTransfer(uint8_t bus_index, uint16_t dmaTxSize, uint16_t dmaRxSize, bool checkResponse)
+{
+    // 1. Configurar transferencia de TX (16 bits)
+    uDMAChannelTransferSet(UDMA_CH11_SSI0TX | UDMA_PRI_SELECT,
+                         UDMA_MODE_BASIC,
+                         ledXmtBuffer[bus_index],      // Origen específico del bus
+                         (void*)(SSI0_BASE + 0x008),  // Destino (SSI0_DR)
+                         dmaTxSize);                   // Número de elementos uint16_t
+
+    // Configurar control para TX (16 bits)
+    uDMAChannelControlSet(UDMA_CH11_SSI0TX | UDMA_PRI_SELECT,
+                         UDMA_SIZE_16 | UDMA_SRC_INC_16 |
+                         UDMA_DST_INC_NONE | UDMA_ARB_4);
+
+    if(checkResponse)
+    {
+        // 2. Configurar transferencia de RX (8 bits)
+        uDMAChannelTransferSet(UDMA_CH10_SSI0RX | UDMA_PRI_SELECT,
+                             UDMA_MODE_BASIC,
+                             (void*)(SSI0_BASE + 0x008),  // Origen (SSI0_DR)
+                             RxRingBuff[bus_index],       // Destino específico del bus
+                             dmaRxSize);                  // Número de bytes a recibir
+
+        // Configurar control para RX (8 bits)
+        uDMAChannelControlSet(UDMA_CH10_SSI0RX | UDMA_PRI_SELECT,
+                             UDMA_SIZE_8 | UDMA_SRC_INC_NONE |
+                             UDMA_DST_INC_8 | UDMA_ARB_4);
+
+        // 3. Habilitar ambos canales
+        uDMAChannelEnable(UDMA_CH11_SSI0TX); // TX primero
+        uDMAChannelEnable(UDMA_CH10_SSI0RX); // Luego RX
+
+        // 4. Esperar completar ambas transferencias
+        while(uDMAChannelIsEnabled(UDMA_CH11_SSI0TX) ||
+              uDMAChannelIsEnabled(UDMA_CH10_SSI0RX));
+    }
+    else
+    {
+        // Solo transferencia de TX
+        uDMAChannelEnable(UDMA_CH11_SSI0TX);
+        while(uDMAChannelIsEnabled(UDMA_CH11_SSI0TX));
+    }
+}
+/*
 void dmaTransfer(unsigned int dmaTxSize, unsigned int dmaRxSize, unsigned int checkResponse)
 {
     /*
@@ -133,6 +208,8 @@ void dmaTransfer(unsigned int dmaTxSize, unsigned int dmaRxSize, unsigned int ch
         while(!(DMA1CTL&DMAIFG)); //Wait until receive all response byte
         DMA1CTL &= ~(DMAEN + DMAIFG); //disable DMA1
         DMA0CTL &= ~(DMAEN); //disable DMA0
-    }*/
+    }
+
 }
 
+*/

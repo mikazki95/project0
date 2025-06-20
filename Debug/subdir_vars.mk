@@ -9,7 +9,10 @@ CMD_SRCS += \
 ../project0_ccs.cmd 
 
 C_SRCS += \
+../CCSI_Socket.c \
+../TLC698x_LP589x_APIs.c \
 ../dma.c \
+../frames.c \
 ../project0.c \
 ../spi.c \
 ../startup_ccs.c \
@@ -17,7 +20,10 @@ C_SRCS += \
 ../ucs.c 
 
 C_DEPS += \
+./CCSI_Socket.d \
+./TLC698x_LP589x_APIs.d \
 ./dma.d \
+./frames.d \
 ./project0.d \
 ./spi.d \
 ./startup_ccs.d \
@@ -25,7 +31,10 @@ C_DEPS += \
 ./ucs.d 
 
 OBJS += \
+./CCSI_Socket.obj \
+./TLC698x_LP589x_APIs.obj \
 ./dma.obj \
+./frames.obj \
 ./project0.obj \
 ./spi.obj \
 ./startup_ccs.obj \
@@ -33,7 +42,10 @@ OBJS += \
 ./ucs.obj 
 
 OBJS__QUOTED += \
+"CCSI_Socket.obj" \
+"TLC698x_LP589x_APIs.obj" \
 "dma.obj" \
+"frames.obj" \
 "project0.obj" \
 "spi.obj" \
 "startup_ccs.obj" \
@@ -41,7 +53,10 @@ OBJS__QUOTED += \
 "ucs.obj" 
 
 C_DEPS__QUOTED += \
+"CCSI_Socket.d" \
+"TLC698x_LP589x_APIs.d" \
 "dma.d" \
+"frames.d" \
 "project0.d" \
 "spi.d" \
 "startup_ccs.d" \
@@ -49,7 +64,10 @@ C_DEPS__QUOTED += \
 "ucs.d" 
 
 C_SRCS__QUOTED += \
+"../CCSI_Socket.c" \
+"../TLC698x_LP589x_APIs.c" \
 "../dma.c" \
+"../frames.c" \
 "../project0.c" \
 "../spi.c" \
 "../startup_ccs.c" \
